@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "age_groups",
+  "info": {
+    "singularName": "age-group",
+    "pluralName": "age-groups",
+    "displayName": "age-groups"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "min_age": {
+      "type": "integer"
+    },
+    "max_age": {
+      "type": "integer"
+    },
+    "resource": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::resource.resource",
+      "inversedBy": "age_groups"
+    }
+  }
+}
