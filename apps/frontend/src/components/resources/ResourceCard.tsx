@@ -1,29 +1,38 @@
-import React from 'react';
+import React from "react";
 
 interface ResourceCardProps {
-    title: string;
-    description: string;
-    icon?: React.ReactNode;
-    cover?: string;
-    onClick?: () => void;
+  title: string;
+  icon?: React.ReactNode;
+  cover?: string;
+  onClick?: () => void;
 }
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
-    title,
-    description,
-    icon,
-    cover,
-    onClick,
+  title,
+  icon,
+  cover,
+  onClick,
 }) => {
-    return (
-        <div
-            onClick={onClick}
-            className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
-        >
-            {icon && <div className="mb-4 text-2xl">{icon}</div>}
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-            <p className="text-gray-600 text-sm">{description}</p>
-            <img src={cover} alt={`${title} cover`} className="w-full h-full object-cover mt-4" />
+  return (
+    <article
+      onClick={onClick}
+      className="flex h-full w-full cursor-pointer flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5 md:p-6"
+    >
+      {icon && <div className="mb-3 text-xl sm:text-2xl">{icon}</div>}
+
+      <h3 className="mb-2 break-words text-base font-semibold text-slate-900 sm:text-lg">
+        {title}
+      </h3>
+
+      {cover && (
+        <div className="mt-4 overflow-hidden rounded-xl">
+          <img
+            src={cover}
+            alt={`Portada de ${title}`}
+            className="h-40 w-full object-cover sm:h-44 md:h-48"
+          />
         </div>
-    );
+      )}
+    </article>
+  );
 };

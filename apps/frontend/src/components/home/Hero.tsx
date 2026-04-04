@@ -27,9 +27,11 @@ export default function Hero() {
 
         {/* Contenido */}
         <div className="relative z-10 px-6 pb-10 pt-6 md:px-8 md:py-10 lg:px-12">
-          <h1 className="max-w-[12ch] text-3xl font-extrabold leading-tight tracking-[-0.02em] text-[#111827] md:text-4xl lg:text-xl">
-            <span className="text-[#1baed1]">ONE Education</span> - Creciendo
-            con tecnología, explorando con curiosidad
+          <h1 className="max-w-[20ch] text-3xl font-extrabold leading-[1.05] tracking-[-0.02em] text-[#111827] md:text-4xl lg:text-5xl">
+            <span className="text-[#1baed1]">ONE Education</span>{" "}
+            <span className="text-[#111827]">
+              Creciendo con tecnología, explorando con curiosidad
+            </span>
           </h1>
 
           <p className="mt-4 max-w-[52ch] text-sm text-[#374151] md:text-base">

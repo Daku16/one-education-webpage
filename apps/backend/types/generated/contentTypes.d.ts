@@ -641,6 +641,7 @@ export interface ApiResourceResource extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::age-group.age-group'
     >;
+    audience: Schema.Attribute.Enumeration<['nino', 'docente']>;
     categories: Schema.Attribute.Relation<
       'oneToMany',
       'api::category.category'

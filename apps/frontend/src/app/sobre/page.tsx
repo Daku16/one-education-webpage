@@ -1,7 +1,15 @@
+import AboutHero from "../../components/about/AboutHero";
+import VisionSection from "../../components/about/VisionSection";
+import InnovationSection from "../../components/about/InnovationSection";
+import AboutReaCta from "../../components/about/AboutReaCta";
+
 export default function SobrePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Sobre Nosotros</h1>
-    </div>
-  )
+    <main className="text-stone-800">
+      <AboutHero />
+      <VisionSection />
+      <InnovationSection />
+      <AboutReaCta />
+    </main>
+  );
 }

@@ -69,6 +69,13 @@
       "relation": "oneToMany",
       "target": "api::age-group.age-group",
       "mappedBy": "resource"
+    },
+    "audience": {
+      "type": "enumeration",
+      "enum": [
+        "nino",
+        "docente"
+      ]
     }
   }
 }
