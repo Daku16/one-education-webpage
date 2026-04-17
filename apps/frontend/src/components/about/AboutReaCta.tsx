@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function AboutReaCta() {
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16">
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950 to-slate-900 p-8 shadow-2xl">
         <div className="grid items-center gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">

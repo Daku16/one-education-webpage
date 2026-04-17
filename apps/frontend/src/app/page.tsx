@@ -2,6 +2,7 @@ import Hero from "../components/home/Hero";
 import Journey from "../components/home/Journey";
 import Methodology from "../components/home/Methodology";
 import Newsletter from "../components/home/Newsletter";
+import { PedagogicalStatement } from "../components/home/PedagogicalStatement";
 import { Pillars } from "../components/home/Pillars";
 import { Stats } from "../components/home/Stats";
 
@@ -13,6 +14,7 @@ export default function Home() {
       <Pillars />
       <Stats />
       <Journey />
+      <PedagogicalStatement className="mt-20" />
       <Methodology />
       <Newsletter />
     </main>
