@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   BlocksRenderer,
   type BlocksContent,
@@ -11,7 +12,7 @@ interface BlocksContentProps {
 }
 
 export function BlocksContentRenderer({ content }: BlocksContentProps) {
-  if (!content?.length) return null;
+  if (!Array.isArray(content) || content.length === 0) return null;
 
   return (
     <div className="max-w-none">
@@ -49,11 +50,18 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
                     {children}
                   </h4>
                 );
-              default:
+              case 5:
                 return (
                   <h5 className="mb-3 mt-5 text-base font-semibold text-slate-900">
                     {children}
                   </h5>
+                );
+              case 6:
+              default:
+                return (
+                  <h6 className="mb-3 mt-5 text-sm font-semibold uppercase tracking-wide text-slate-900">
+                    {children}
+                  </h6>
                 );
             }
           },
@@ -72,15 +80,34 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
               </ul>
             );
           },
+          "list-item": ({ children }) => (
+            <li className="leading-7 text-slate-700">{children}</li>
+          ),
           quote: ({ children }) => (
             <blockquote className="my-6 rounded-r-2xl border-l-4 border-teal-500 bg-teal-50 px-4 py-3 text-sm italic leading-7 text-slate-700 sm:text-base">
               {children}
             </blockquote>
           ),
-          code: ({ children }) => (
+          code: ({ plainText }) => (
             <pre className="my-6 overflow-x-auto rounded-2xl bg-slate-950 p-4 text-sm text-slate-100">
-              <code>{children}</code>
+              <code>{plainText}</code>
             </pre>
+          ),
+          image: ({ image }) => (
+            <figure className="my-6 overflow-hidden rounded-2xl">
+              <Image
+                src={image.url}
+                alt={image.alternativeText || image.name || ""}
+                width={image.width}
+                height={image.height}
+                className="h-auto w-full rounded-2xl object-cover"
+              />
+              {image.caption && (
+                <figcaption className="mt-2 text-sm text-slate-500">
+                  {image.caption}
+                </figcaption>
+              )}
+            </figure>
           ),
           link: ({ children, url }) => {
             const isExternal = url?.startsWith("http");

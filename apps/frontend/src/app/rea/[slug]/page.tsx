@@ -83,10 +83,24 @@ function hasBlocks(value: unknown) {
   return Array.isArray(value) && value.length > 0;
 }
 
+function renderRichTextOrParagraph(value: any, className = "") {
+  if (!value) return null;
+
+  if (Array.isArray(value)) {
+    return <BlocksContentRenderer content={value} />;
+  }
+
+  if (typeof value === "string") {
+    return <p className={className}>{value}</p>;
+  }
+
+  return null;
+}
+
 function renderSection(section: any, index: number) {
   const type = section?.__component ?? section?.type ?? section?.component;
 
-  if (type === "shared.rich-text" || section?.content) {
+  if (type === "shared.rich-text") {
     return (
       <section
         key={index}
@@ -107,7 +121,7 @@ function renderSection(section: any, index: number) {
         </div>
 
         <div className="child-content">
-          <BlocksContentRenderer content={section.content ?? section} />
+          <BlocksContentRenderer content={section.content} />
         </div>
       </section>
     );
@@ -119,11 +133,16 @@ function renderSection(section: any, index: number) {
         key={index}
         className="mt-6 rounded-[22px] bg-teal-50 p-4 ring-1 ring-teal-100 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
       >
-        <h2 className="mb-3 text-lg font-black text-slate-900 sm:text-xl">
-          {section.title}
-        </h2>
-        <div className="prose max-w-none">
-          <BlocksContentRenderer content={section.text} />
+        {section.title && (
+          <h2 className="mb-3 text-lg font-black text-slate-900 sm:text-xl">
+            {section.title}
+          </h2>
+        )}
+        <div className="max-w-none">
+          {renderRichTextOrParagraph(
+            section.text,
+            "text-sm leading-7 text-slate-700 sm:text-base"
+          )}
         </div>
       </section>
     );
@@ -135,9 +154,21 @@ function renderSection(section: any, index: number) {
         key={index}
         className="mt-6 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
       >
-        <h2 className="mb-4 text-lg font-black text-slate-900 sm:text-xl">
-          {section.title}
-        </h2>
+        {section.title && (
+          <h2 className="mb-4 text-lg font-black text-slate-900 sm:text-xl">
+            {section.title}
+          </h2>
+        )}
+
+        {section.intro && (
+          <div className="mb-4">
+            {renderRichTextOrParagraph(
+              section.intro,
+              "text-sm leading-7 text-slate-600 sm:text-base"
+            )}
+          </div>
+        )}
+
         <div className="grid gap-3 sm:grid-cols-2">
           {(section.items ?? []).map((item: any, itemIndex: number) => (
             <div
@@ -163,19 +194,33 @@ function renderSection(section: any, index: number) {
         key={index}
         className="mt-6 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
       >
-        <h2 className="mb-3 text-lg font-black text-slate-900 sm:text-xl">
-          {section.title}
-        </h2>
+        {section.title && (
+          <h2 className="mb-3 text-lg font-black text-slate-900 sm:text-xl">
+            {section.title}
+          </h2>
+        )}
+
         {section.objective && (
           <div className="mb-4">
-            <div className="prose max-w-none">
-              <BlocksContentRenderer content={section.objective} />
-            </div>
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+              Objetivo
+            </p>
+            {renderRichTextOrParagraph(
+              section.objective,
+              "text-sm leading-7 text-slate-700 sm:text-base"
+            )}
           </div>
         )}
+
         {section.instructions && (
-          <div className="prose max-w-none">
-            <BlocksContentRenderer content={section.instructions} />
+          <div>
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+              Indicaciones
+            </p>
+            {renderRichTextOrParagraph(
+              section.instructions,
+              "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+            )}
           </div>
         )}
       </section>
@@ -188,9 +233,21 @@ function renderSection(section: any, index: number) {
         key={index}
         className="mt-6 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
       >
-        <h2 className="mb-4 text-lg font-black text-slate-900 sm:text-xl">
-          {section.title}
-        </h2>
+        {section.title && (
+          <h2 className="mb-2 text-lg font-black text-slate-900 sm:text-xl">
+            {section.title}
+          </h2>
+        )}
+
+        {section.intro && (
+          <div className="mb-5">
+            {renderRichTextOrParagraph(
+              section.intro,
+              "text-sm leading-7 text-slate-600 sm:text-base"
+            )}
+          </div>
+        )}
+
         <div className="space-y-4">
           {(section.phases ?? []).map((phase: any, phaseIndex: number) => (
             <article
@@ -200,12 +257,50 @@ function renderSection(section: any, index: number) {
               <p className="text-sm font-bold text-teal-700">
                 Fase {phase.phase_number ?? phaseIndex + 1}
               </p>
+
               <h3 className="mt-1 text-base font-black text-slate-900 sm:text-lg">
                 {phase.title}
               </h3>
+
+              {phase.main_resource && (
+                <p className="mt-2 text-sm font-semibold text-slate-500">
+                  Recurso principal: {phase.main_resource}
+                </p>
+              )}
+
               {phase.objective && (
-                <div className="prose mt-2 max-w-none">
-                  <BlocksContentRenderer content={phase.objective} />
+                <div className="mt-4">
+                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                    Objetivo
+                  </p>
+                  {renderRichTextOrParagraph(
+                    phase.objective,
+                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                  )}
+                </div>
+              )}
+
+              {phase.development && (
+                <div className="mt-4">
+                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                    Desarrollo
+                  </p>
+                  {renderRichTextOrParagraph(
+                    phase.development,
+                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                  )}
+                </div>
+              )}
+
+              {phase.expected_results && (
+                <div className="mt-4">
+                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                    Resultados esperados
+                  </p>
+                  {renderRichTextOrParagraph(
+                    phase.expected_results,
+                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                  )}
                 </div>
               )}
             </article>
@@ -221,9 +316,12 @@ function renderSection(section: any, index: number) {
         key={index}
         className="mt-6 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
       >
-        <h2 className="mb-4 text-lg font-black text-slate-900 sm:text-xl">
-          {section.title}
-        </h2>
+        {section.title && (
+          <h2 className="mb-4 text-lg font-black text-slate-900 sm:text-xl">
+            {section.title}
+          </h2>
+        )}
+
         <div className="space-y-3">
           {(section.items ?? []).map((item: any, linkIndex: number) => (
             <a
@@ -234,7 +332,9 @@ function renderSection(section: any, index: number) {
               className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-800 transition hover:bg-slate-100"
             >
               <div className="font-bold">{item.label}</div>
-              {item.type && <div className="text-sm text-slate-500">{item.type}</div>}
+              {item.type && (
+                <div className="text-sm text-slate-500">{item.type}</div>
+              )}
             </a>
           ))}
         </div>
@@ -321,7 +421,10 @@ export default async function ReaSlugPage({ params }: ReaSlugPageProps) {
                   <div className="relative h-[220px] overflow-hidden rounded-[18px] bg-white sm:h-[280px] sm:rounded-[22px] md:h-[320px] lg:h-[360px] lg:rounded-[26px]">
                     <Image
                       src={resource.cover.url}
-                      alt={resource.cover.alternativeText || `Portada de ${resource.title}`}
+                      alt={
+                        resource.cover.alternativeText ||
+                        `Portada de ${resource.title}`
+                      }
                       fill
                       className="object-cover"
                       priority
