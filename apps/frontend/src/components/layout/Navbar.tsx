@@ -1,4 +1,3 @@
-// apps/frontend/src/components/layout/Navbar.tsx
 'use client';
 
 import Link from 'next/link';

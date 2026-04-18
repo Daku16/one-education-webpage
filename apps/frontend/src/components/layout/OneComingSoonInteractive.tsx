@@ -159,8 +159,8 @@ export function OneComingSoonInteractive() {
                   active ? "scale-110 opacity-100" : "scale-95 opacity-70"
                 )}
               />
-
-              <Image
+              <div className="relative aspect-[4/5] w-full">
+                <Image
                 src="/One.png"
                 alt="Personaje ONE construyendo una nueva sección"
                 width={320}
@@ -172,6 +172,7 @@ export function OneComingSoonInteractive() {
                   !active && "animate-[float_3.6s_ease-in-out_infinite]"
                 )}
               />
+              </div>
             </div>
 
             <p className="mt-10 text-center text-sm font-bold uppercase tracking-[0.2em] text-slate-500">

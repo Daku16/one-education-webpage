@@ -22,6 +22,22 @@
     },
     "message": {
       "type": "text"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "enumeration",
+      "enum": [
+        "Implementar ONE en mi institución",
+        "Recursos educativos",
+        "Formación docente",
+        "Investigación",
+        "Alianzas"
+      ]
     }
   }
 }

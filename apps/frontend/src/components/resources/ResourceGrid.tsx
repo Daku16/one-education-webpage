@@ -21,7 +21,7 @@ export function ResourceGrid({ resources }: ResourceGridProps) {
   }
 
   return (
-    <section className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
+    <section className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
       {resources.map((resource) => (
         <Link
           key={resource.id}

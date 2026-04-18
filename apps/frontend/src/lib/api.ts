@@ -1,5 +1,5 @@
-// apps/frontend/src/lib/api.ts
 import axios from "axios";
+import qs from "qs";
 
 const rawBaseURL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -15,6 +15,11 @@ const baseURL = rawBaseURL.endsWith("/api")
 
 export const api = axios.create({
   baseURL,
+  paramsSerializer: (params) =>
+    qs.stringify(params, {
+      encodeValuesOnly: true,
+      arrayFormat: "indices",
+    }),
 });
 
 api.interceptors.response.use(
@@ -25,6 +30,7 @@ api.interceptors.response.use(
       status: error?.response?.status,
       url: error?.config?.url,
       baseURL: error?.config?.baseURL,
+      params: error?.config?.params,
       data: error?.response?.data,
     });
     throw error;

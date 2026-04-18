@@ -76,6 +76,20 @@
         "nino",
         "docente"
       ]
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "resource.callout",
+        "resource.key-points",
+        "resource.material-list",
+        "resource.phase-list",
+        "resource.phase-item",
+        "resource.activity",
+        "resource.links",
+        "resource.media-block"
+      ]
     }
   }
 }

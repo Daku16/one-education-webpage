@@ -4,7 +4,94 @@ import type {
   ResourceRelation,
   StrapiImage,
   ResourceContentBlock,
+  ResourceSection,
+  ResourceRichTextSection,
+  ResourceCalloutSection,
+  ResourceKeyPointsSection,
+  ResourceActivitySection,
+  ResourcePhaseListSection,
+  ResourceLinksSection,
 } from "@/src/types/resource";
+
+interface StrapiKeyPointItem {
+  id?: number;
+  title?: string | null;
+  description?: string | null;
+}
+
+interface StrapiPhaseItem {
+  id?: number;
+  phase_number?: number | null;
+  title?: string | null;
+  main_resource?: string | null;
+  objective?: ResourceContentBlock[] | null;
+  development?: ResourceContentBlock[] | null;
+  expected_results?: ResourceContentBlock[] | null;
+}
+
+interface StrapiLinkItem {
+  id?: number;
+  label?: string | null;
+  url?: string | null;
+  type?: string | null;
+}
+
+interface StrapiSectionBase {
+  id?: number;
+  __component: string;
+}
+
+interface StrapiRichTextSection extends StrapiSectionBase {
+  __component: "shared.rich-text";
+  title?: string | null;
+  content?: ResourceContentBlock[] | null;
+}
+
+interface StrapiCalloutSection extends StrapiSectionBase {
+  __component: "resource.callout";
+  title?: string | null;
+  text?: ResourceContentBlock[] | null;
+  variant?: string | null;
+}
+
+interface StrapiKeyPointsSection extends StrapiSectionBase {
+  __component: "resource.key-points";
+  title?: string | null;
+  intro?: string | null;
+  items?: StrapiKeyPointItem[] | null;
+}
+
+interface StrapiActivitySection extends StrapiSectionBase {
+  __component: "resource.activity";
+  title?: string | null;
+  activity_type?: string | null;
+  objective?: ResourceContentBlock[] | null;
+  instructions?: ResourceContentBlock[] | null;
+  expected_outcome?: ResourceContentBlock[] | null;
+}
+
+interface StrapiPhaseListSection extends StrapiSectionBase {
+  __component: "resource.phase-list";
+  title?: string | null;
+  intro?: string | null;
+  phases?: StrapiPhaseItem[] | null;
+}
+
+interface StrapiLinksSection extends StrapiSectionBase {
+  __component: "resource.links";
+  title?: string | null;
+  description?: string | null;
+  items?: StrapiLinkItem[] | null;
+}
+
+type StrapiSection =
+  | StrapiRichTextSection
+  | StrapiCalloutSection
+  | StrapiKeyPointsSection
+  | StrapiActivitySection
+  | StrapiPhaseListSection
+  | StrapiLinksSection
+  | StrapiSectionBase;
 
 interface StrapiResourceItem {
   id: number;
@@ -13,6 +100,7 @@ interface StrapiResourceItem {
   slug: string;
   description: string;
   content?: ResourceContentBlock[] | null;
+  sections?: StrapiSection[] | null;
   audience?: string | null;
   resource_type?: string | null;
   difficulty?: string | null;
@@ -20,6 +108,8 @@ interface StrapiResourceItem {
     id?: number;
     url: string;
     alternativeText?: string | null;
+    width?: number;
+    height?: number;
   } | null;
   categories?: ResourceRelation[];
   tags?: ResourceRelation[];
@@ -59,7 +149,128 @@ function normalizeCover(cover?: StrapiImage | null): StrapiImage | null {
     id: cover.id,
     url: getMediaUrl(cover.url),
     alternativeText: cover.alternativeText ?? null,
+    width: cover.width,
+    height: cover.height,
   };
+}
+
+function isRichTextSection(section: StrapiSection): section is StrapiRichTextSection {
+  return section.__component === "shared.rich-text";
+}
+
+function isCalloutSection(section: StrapiSection): section is StrapiCalloutSection {
+  return section.__component === "resource.callout";
+}
+
+function isKeyPointsSection(section: StrapiSection): section is StrapiKeyPointsSection {
+  return section.__component === "resource.key-points";
+}
+
+function isActivitySection(section: StrapiSection): section is StrapiActivitySection {
+  return section.__component === "resource.activity";
+}
+
+function isPhaseListSection(section: StrapiSection): section is StrapiPhaseListSection {
+  return section.__component === "resource.phase-list";
+}
+
+function isLinksSection(section: StrapiSection): section is StrapiLinksSection {
+  return section.__component === "resource.links";
+}
+
+function normalizeSections(sections?: StrapiSection[] | null): ResourceSection[] {
+  if (!Array.isArray(sections)) return [];
+
+  return sections.map((section) => {
+    if (isRichTextSection(section)) {
+      const normalized: ResourceRichTextSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        content: section.content ?? [],
+      };
+      return normalized;
+    }
+
+    if (isCalloutSection(section)) {
+      const normalized: ResourceCalloutSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        text: section.text ?? [],
+        variant: section.variant ?? "neutral",
+      };
+      return normalized;
+    }
+
+    if (isKeyPointsSection(section)) {
+      const normalized: ResourceKeyPointsSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        intro: section.intro ?? null,
+        items: (section.items ?? []).map((item) => ({
+          id: item.id,
+          title: item.title ?? null,
+          description: item.description ?? null,
+        })),
+      };
+      return normalized;
+    }
+
+    if (isActivitySection(section)) {
+      const normalized: ResourceActivitySection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        activity_type: section.activity_type ?? null,
+        objective: section.objective ?? [],
+        instructions: section.instructions ?? [],
+        expected_outcome: section.expected_outcome ?? [],
+      };
+      return normalized;
+    }
+
+    if (isPhaseListSection(section)) {
+      const normalized: ResourcePhaseListSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        intro: section.intro ?? null,
+        phases: (section.phases ?? []).map((phase) => ({
+          id: phase.id,
+          phase_number: phase.phase_number ?? null,
+          title: phase.title ?? null,
+          main_resource: phase.main_resource ?? null,
+          objective: phase.objective ?? [],
+          development: phase.development ?? [],
+          expected_results: phase.expected_results ?? [],
+        })),
+      };
+      return normalized;
+    }
+
+    if (isLinksSection(section)) {
+      const normalized: ResourceLinksSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        description: section.description ?? null,
+        items: (section.items ?? []).map((item) => ({
+          id: item.id,
+          label: item.label ?? null,
+          url: item.url ?? null,
+          type: item.type ?? null,
+        })),
+      };
+      return normalized;
+    }
+
+    return {
+      __component: section.__component,
+      id: section.id,
+    };
+  });
 }
 
 function normalizeResource(item: StrapiResourceItem): Resource {
@@ -70,6 +281,7 @@ function normalizeResource(item: StrapiResourceItem): Resource {
     slug: item.slug,
     description: item.description,
     content: item.content ?? null,
+    sections: normalizeSections(item.sections),
     audience: item.audience ?? null,
     resource_type: item.resource_type ?? null,
     difficulty: item.difficulty ?? null,
@@ -107,21 +319,53 @@ export async function getResourceBySlug(slug: string): Promise<Resource | null> 
   const response = await apiGet<StrapiCollectionResponse<StrapiResourceItem>>(
     "/resources",
     {
-      "filters[slug][$eq]": slug,
-      "fields[0]": "documentId",
-      "fields[1]": "title",
-      "fields[2]": "slug",
-      "fields[3]": "description",
-      "fields[4]": "content",
-      "fields[5]": "audience",
-      "fields[6]": "resource_type",
-      "fields[7]": "difficulty",
-      "populate[0]": "cover",
-      "populate[1]": "categories",
-      "populate[2]": "tags",
-      "populate[3]": "age_groups",
-      "pagination[page]": "1",
-      "pagination[pageSize]": "1",
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      fields: [
+        "documentId",
+        "title",
+        "slug",
+        "description",
+        "content",
+        "audience",
+        "resource_type",
+        "difficulty",
+      ],
+      populate: {
+        cover: true,
+        categories: true,
+        tags: true,
+        age_groups: true,
+        sections: {
+          on: {
+            "shared.rich-text": {
+              populate: "*",
+            },
+            "resource.callout": {
+              populate: "*",
+            },
+            "resource.key-points": {
+              populate: "*",
+            },
+            "resource.activity": {
+              populate: "*",
+            },
+            "resource.phase-list": {
+              populate: "*",
+            },
+            "resource.links": {
+              populate: "*",
+            },
+          },
+        },
+      },
+      pagination: {
+        page: 1,
+        pageSize: 1,
+      },
     }
   );
 

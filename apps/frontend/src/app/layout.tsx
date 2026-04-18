@@ -19,15 +19,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={cn("font-sans", geist.variable)}>
       <body
         className={cn(
-          // Fondo general alegre pero sin encerrar el contenido en una tarjeta
           "min-h-screen bg-gradient-to-b from-sky-100 via-emerald-50 to-amber-100",
           "text-slate-900 text-base md:text-lg"
         )}
       >
         <div className="min-h-screen flex flex-col">
           <Navbar />
-
-          {/* El Hero y el resto de páginas controlan su propio layout */}
           <main className="flex-1">
             {children}
           </main>

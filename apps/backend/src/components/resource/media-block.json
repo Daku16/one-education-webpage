@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_resource_media_blocks",
+  "info": {
+    "displayName": "media-block"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "layout": {
+      "type": "enumeration",
+      "enum": [
+        "full",
+        "contained",
+        "left",
+        "right"
+      ]
+    }
+  },
+  "config": {}
+}

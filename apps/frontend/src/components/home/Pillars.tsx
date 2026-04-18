@@ -19,7 +19,7 @@ const PILLARS = [
     subtitle: "Poleas, palancas, piñones, resortes",
     side: "right" as const,
     top: "20%",
-    mobileTop: "28%",
+    mobileTop: "20%",
     progress: 0.18,
     color: "from-orange-300 via-amber-200 to-yellow-100",
     tint: "rgba(251, 146, 60, 0.16)",
@@ -32,7 +32,7 @@ const PILLARS = [
     subtitle: "Voltaje, corriente, sensores, motores",
     side: "left" as const,
     top: "36%",
-    mobileTop: "43%",
+    mobileTop: "34%",
     progress: 0.4,
     color: "from-sky-300 via-cyan-200 to-blue-100",
     tint: "rgba(56, 189, 248, 0.16)",
@@ -45,7 +45,7 @@ const PILLARS = [
     subtitle: "Algoritmos, variables, bucles, condicionales",
     side: "right" as const,
     top: "58%",
-    mobileTop: "58%",
+    mobileTop: "43%",
     progress: 0.64,
     color: "from-violet-300 via-fuchsia-200 to-pink-100",
     tint: "rgba(168, 85, 247, 0.16)",
@@ -57,8 +57,8 @@ const PILLARS = [
     title: "Robótica",
     subtitle: "Construcción, movimiento, resolución de problemas",
     side: "left" as const,
-    top: "74%",
-    mobileTop: "73%",
+    top: "64%",
+    mobileTop: "50%",
     progress: 0.88,
     color: "from-emerald-300 via-lime-200 to-green-100",
     tint: "rgba(34, 197, 94, 0.16)",
@@ -90,7 +90,7 @@ export function Pillars() {
   const pathRef = useRef<SVGPathElement | null>(null);
   const isMobile = useIsMobile();
 
-  const { scrollYProgress } = useScroll({
+  const { scrollY, scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
@@ -101,8 +101,29 @@ export function Pillars() {
   const p4 = 0.88;
   const PAUSE = isMobile ? 0.09 : 0.06;
 
+  const [scrollDirection, setScrollDirection] = useState<"up" | "down">("down");
+  const [robotPos, setRobotPos] = useState({ x: 18, y: 10 });
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const previous = scrollY.getPrevious() ?? current;
+    const diff = current - previous;
+
+    if (diff > 0) setScrollDirection("down");
+    else if (diff < 0) setScrollDirection("up");
+  });
+
+  const downBias = isMobile ? 0.035 : 0.02;
+
+  const adjustedProgress = useTransform(scrollYProgress, (value) => {
+    if (scrollDirection === "down") {
+      return Math.min(1, value + downBias);
+    }
+    return value;
+  });
+
   const trackProgress = useTransform(
-    scrollYProgress,
+    adjustedProgress,
     [
       0,
       p1 - PAUSE,
@@ -128,9 +149,6 @@ export function Pillars() {
       1,
     ]
   );
-
-  const [robotPos, setRobotPos] = useState({ x: 18, y: 10 });
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
   useMotionValueEvent(trackProgress, "change", (t) => {
     if (!pathRef.current) return;
@@ -177,11 +195,11 @@ export function Pillars() {
     <section
       ref={sectionRef}
       className={`relative w-full ${
-        isMobile ? "h-[520vh]" : "h-[800vh] lg:h-[900vh]"
+        isMobile ? "h-[460vh]" : "h-[800vh] lg:h-[900vh]"
       }`}
     >
-      <div className="sticky top-0 flex h-screen items-center justify-center px-3 sm:px-4 lg:px-6">
-        <div className="relative h-screen w-full max-w-7xl overflow-hidden rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,#f8fdff_0%,#f5fbff_20%,#fefcff_55%,#f5fff8_100%)] px-3 shadow-[0_25px_80px_rgba(15,23,42,0.16)] md:rounded-[40px] md:px-6 lg:rounded-[48px] lg:px-8">
+      <div className="sticky top-20 flex h-dvh items-center justify-center px-3 sm:px-4 lg:px-6">
+        <div className="relative h-[100dvh] w-full max-w-7xl overflow-hidden rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,#f8fdff_0%,#f5fbff_20%,#fefcff_55%,#f5fff8_100%)] px-3 shadow-[0_25px_80px_rgba(15,23,42,0.16)] md:rounded-[40px] md:px-6 lg:rounded-[48px] lg:px-8">
           <PremiumBackground
             activePillar={activePillar}
             pathRef={pathRef}
@@ -302,6 +320,7 @@ export function Pillars() {
                   src="/One.png"
                   alt="Robot One"
                   fill
+                  sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, (max-width: 1024px) 80px, 96px"
                   className="object-contain drop-shadow-[0_10px_24px_rgba(56,189,248,0.45)]"
                   priority
                 />
@@ -421,7 +440,7 @@ function PillarStop({
             <div
               className={
                 isMobile
-                  ? "relative z-[60] mt-2 w-full"
+                  ? "relative z-[60] mt- w-full"
                   : `absolute top-0 z-[60] ${
                       isLeft ? "left-full ml-4" : "right-full mr-4"
                     }`
@@ -518,22 +537,22 @@ function PillarMarkers({ isMobile }: { isMobile: boolean }) {
     <>
       <div
         className={`absolute z-[31] h-3 w-3 rounded-full border-2 border-white bg-sky-300 shadow-[0_0_20px_rgba(56,189,248,0.45)] md:h-4 md:w-4 ${
-          isMobile ? "left-[18%] top-[14%]" : "left-[18%] top-[12%]"
+          isMobile ? "left-[18%] top-[13%]" : "left-[18%] top-[12%]"
         }`}
       />
       <div
         className={`absolute z-[31] h-3 w-3 rounded-full border-2 border-white bg-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.45)] md:h-4 md:w-4 ${
-          isMobile ? "left-[17%] top-[41%]" : "left-[14%] top-[39%]"
+          isMobile ? "left-[17%] top-[38%]" : "left-[14%] top-[39%]"
         }`}
       />
       <div
         className={`absolute z-[31] h-3 w-3 rounded-full border-2 border-white bg-violet-300 shadow-[0_0_20px_rgba(168,85,247,0.45)] md:h-4 md:w-4 ${
-          isMobile ? "right-[24%] top-[64%]" : "right-[21%] top-[62%]"
+          isMobile ? "right-[24%] top-[58%]" : "right-[21%] top-[62%]"
         }`}
       />
       <div
         className={`absolute z-[31] h-3 w-3 rounded-full border-2 border-white bg-emerald-300 shadow-[0_0_20px_rgba(34,197,94,0.45)] md:h-4 md:w-4 ${
-          isMobile ? "left-[55%] top-[87%]" : "left-[58%] top-[86%]"
+          isMobile ? "left-[55%] top-[79%]" : "left-[58%] top-[86%]"
         }`}
       />
     </>
@@ -737,7 +756,7 @@ function TrackParticle({
       if (start === null) start = time;
       const elapsed = (time - start) / 1000;
       const progress =
-        (((elapsed - delay) % duration) + duration) % duration / duration;
+        ((((elapsed - delay) % duration) + duration) % duration) / duration;
 
       if (elapsed >= delay) {
         const point = path.getPointAtLength(progress * totalLength);

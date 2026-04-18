@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_resource_activities",
+  "info": {
+    "displayName": "activity"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "activity_type": {
+      "type": "enumeration",
+      "enum": [
+        "juego",
+        "dinamica",
+        "reto",
+        "historia",
+        "ejercicio"
+      ]
+    },
+    "objective": {
+      "type": "blocks"
+    },
+    "instructions": {
+      "type": "blocks"
+    },
+    "materials": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true
+    },
+    "expected_outcome": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

@@ -15,11 +15,8 @@ export default async function ProjectsPage() {
   return (
     <main className="bg-white text-slate-900">
       <section className="border-b border-slate-200 bg-slate-50">
-        <Container className="py-16 md:py-24">
+        <Container className="py-24 lg:py-24 md:py-12">
           <div className="max-w-3xl">
-            <span className="mb-4 inline-block rounded-full bg-teal-50 px-4 py-1 text-sm font-medium text-teal-700">
-              Proyectos
-            </span>
 
             <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
               Proyectos educativos que conectan infancia, territorio y exploración

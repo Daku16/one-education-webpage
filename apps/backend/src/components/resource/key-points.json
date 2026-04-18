@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_resource_key_points",
+  "info": {
+    "displayName": "key-points"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

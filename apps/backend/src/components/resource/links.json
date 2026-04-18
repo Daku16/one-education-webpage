@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_resource_links",
+  "info": {
+    "displayName": "links"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.link-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

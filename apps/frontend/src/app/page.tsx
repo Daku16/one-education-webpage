@@ -6,15 +6,14 @@ import { PedagogicalStatement } from "../components/home/PedagogicalStatement";
 import { Pillars } from "../components/home/Pillars";
 import { Stats } from "../components/home/Stats";
 
-
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="min-h-screen pt-24">
       <Hero />
       <Pillars />
       <Stats />
       <Journey />
-      <PedagogicalStatement className="mt-20" />
+      <PedagogicalStatement className="mt-20 mx-4" />
       <Methodology />
       <Newsletter />
     </main>

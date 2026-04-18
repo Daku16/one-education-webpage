@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_resource_phase_items",
+  "info": {
+    "displayName": "phase-item"
+  },
+  "options": {},
+  "attributes": {
+    "phase_number": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "main_resource": {
+      "type": "text"
+    },
+    "objective": {
+      "type": "blocks"
+    },
+    "development": {
+      "type": "blocks"
+    },
+    "expected_results": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

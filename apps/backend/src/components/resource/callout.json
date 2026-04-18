@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_resource_callouts",
+  "info": {
+    "displayName": "callout"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": false
+    },
+    "text": {
+      "type": "blocks"
+    },
+    "variant": {
+      "type": "enumeration",
+      "enum": [
+        "info",
+        "success",
+        "warning",
+        "neutral"
+      ]
+    },
+    "icon_name": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

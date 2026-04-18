@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_resource_material_items",
+  "info": {
+    "displayName": "material-item"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "infografia",
+        "video",
+        "presentacion",
+        "guia",
+        "pdf",
+        "otro"
+      ]
+    },
+    "file": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "external_url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

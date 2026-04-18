@@ -4,13 +4,10 @@ import Link from "next/link";
 export default function AboutHero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(13,148,136,0.10),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.14),transparent_28%)]" />
+      <div className="absolute inset-0" />
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 lg:grid-cols-12 lg:items-center lg:px-8 lg:py-24">
         <div className="relative z-10 lg:col-span-7">
-          <span className="mb-4 inline-flex rounded-full border border-teal-200 bg-teal-50 px-4 py-1 text-sm font-medium text-teal-800">
-            Sobre ONE
-          </span>
 
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl">
             Ingeniería, ciencia y tecnología para la primera infancia desde el juego y la exploración

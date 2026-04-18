@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_resource_phase_lists",
+  "info": {
+    "displayName": "phase-list"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "string"
+    },
+    "phases": {
+      "type": "component",
+      "component": "resource.phase-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

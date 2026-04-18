@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_resource_material_lists",
+  "info": {
+    "displayName": "material-list"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "materials": {
+      "type": "component",
+      "component": "resource.material-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

@@ -504,6 +504,7 @@ export interface ApiContactContact extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    country: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -517,7 +518,17 @@ export interface ApiContactContact extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     message: Schema.Attribute.Text;
     name: Schema.Attribute.String;
+    phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    subject: Schema.Attribute.Enumeration<
+      [
+        'Implementar ONE en mi instituci\u00F3n',
+        'Recursos educativos',
+        'Formaci\u00F3n docente',
+        'Investigaci\u00F3n',
+        'Alianzas',
+      ]
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -666,6 +677,19 @@ export interface ApiResourceResource extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     resource_type: Schema.Attribute.Enumeration<
       ['actividad', 'juego', 'guia', 'cuento', 'video']
+    >;
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'shared.rich-text',
+        'resource.callout',
+        'resource.key-points',
+        'resource.material-list',
+        'resource.phase-list',
+        'resource.phase-item',
+        'resource.activity',
+        'resource.links',
+        'resource.media-block',
+      ]
     >;
     slug: Schema.Attribute.UID<'title'>;
     tags: Schema.Attribute.Relation<'oneToMany', 'api::tag.tag'>;

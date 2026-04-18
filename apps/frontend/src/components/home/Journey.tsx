@@ -65,7 +65,7 @@ export default function Journey() {
   };
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-24 rounded-3xl">
+    <section className="relative overflow-hidden py-20 sm:py-24 rounded-3xl sm:mx-6 lg:mx-46">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cyan-50 via-white to-emerald-50" />
       <div className="absolute left-0 top-10 -z-10 h-40 w-40 rounded-full bg-pink-200/30 blur-3xl" />
       <div className="absolute right-10 top-20 -z-10 h-52 w-52 rounded-full bg-cyan-200/30 blur-3xl" />
@@ -88,7 +88,7 @@ export default function Journey() {
             </p>
           </div>
 
-          <div className="hidden items-center gap-3 sm:flex">
+          <div className="items-center gap-3 sm:flex">
             <button
               type="button"
               onClick={() => scroll("left")}
