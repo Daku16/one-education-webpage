@@ -10,9 +10,7 @@ const config: Core.Config.Middlewares = [
       origin: [
         'http://localhost:3000',
         'https://one-education-webpage.vercel.app',
-        'https://one-education-webpage-git-main-daku16.vercel.app',
-        'https://tu-dominio.com',
-        'https://www.tu-dominio.com',
+        'https://one-education-webpage-git-main-daku16s-projects.vercel.app/',
         'https://one-education-webpage-mjq82aijw-daku16s-projects.vercel.app/'
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
