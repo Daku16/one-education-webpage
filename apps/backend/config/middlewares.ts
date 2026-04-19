@@ -13,6 +13,7 @@ const config: Core.Config.Middlewares = [
         'https://one-education-webpage-git-main-daku16.vercel.app',
         'https://tu-dominio.com',
         'https://www.tu-dominio.com',
+        'https://one-education-webpage-mjq82aijw-daku16s-projects.vercel.app/'
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
