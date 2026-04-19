@@ -19,7 +19,7 @@ type NewsletterCreateResponse = {
 
 export async function subscribeToNewsletter(email: string) {
   return apiPost<NewsletterCreateResponse, NewsletterCreateBody>(
-    "/api/newsletters",
+    "/newsletters",
     {
       data: { email },
     }
