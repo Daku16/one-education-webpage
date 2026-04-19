@@ -1,4 +1,3 @@
-// apps/frontend/src/types/contact.ts
 import { z } from "zod";
 
 export const contactSubjects = [

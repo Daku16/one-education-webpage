@@ -25,7 +25,7 @@ export async function sendContactMessage(payload: ContactFormValues) {
     );
   }
 
-  const response = await fetch(`${API_URL}/api/contacts`, {
+  const response = await fetch(`${API_URL}/contacts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
