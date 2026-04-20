@@ -8,7 +8,7 @@ import {
 } from "@strapi/blocks-react-renderer";
 
 interface BlocksContentProps {
-  content: BlocksContent;
+  content?: BlocksContent | null;
 }
 
 export function BlocksContentRenderer({ content }: BlocksContentProps) {
@@ -56,7 +56,6 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
                     {children}
                   </h5>
                 );
-              case 6:
               default:
                 return (
                   <h6 className="mb-3 mt-5 text-sm font-semibold uppercase tracking-wide text-slate-900">
@@ -65,21 +64,16 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
                 );
             }
           },
-          list: ({ children, format }) => {
-            if (format === "ordered") {
-              return (
-                <ol className="mb-5 list-decimal space-y-2 pl-6 text-slate-700 marker:font-semibold">
-                  {children}
-                </ol>
-              );
-            }
-
-            return (
+          list: ({ children, format }) =>
+            format === "ordered" ? (
+              <ol className="mb-5 list-decimal space-y-2 pl-6 text-slate-700 marker:font-semibold">
+                {children}
+              </ol>
+            ) : (
               <ul className="mb-5 list-disc space-y-2 pl-6 text-slate-700 marker:text-teal-600">
                 {children}
               </ul>
-            );
-          },
+            ),
           "list-item": ({ children }) => (
             <li className="leading-7 text-slate-700">{children}</li>
           ),
@@ -98,8 +92,8 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
               <Image
                 src={image.url}
                 alt={image.alternativeText || image.name || ""}
-                width={image.width}
-                height={image.height}
+                width={image.width || 1200}
+                height={image.height || 800}
                 className="h-auto w-full rounded-2xl object-cover"
               />
               {image.caption && (
@@ -112,20 +106,16 @@ export function BlocksContentRenderer({ content }: BlocksContentProps) {
           link: ({ children, url }) => {
             const isExternal = url?.startsWith("http");
 
-            if (isExternal) {
-              return (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-teal-700 underline decoration-teal-500 underline-offset-4 transition hover:text-teal-800"
-                >
-                  {children}
-                </a>
-              );
-            }
-
-            return (
+            return isExternal ? (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-teal-700 underline decoration-teal-500 underline-offset-4 transition hover:text-teal-800"
+              >
+                {children}
+              </a>
+            ) : (
               <Link
                 href={url || "#"}
                 className="font-medium text-teal-700 underline decoration-teal-500 underline-offset-4 transition hover:text-teal-800"

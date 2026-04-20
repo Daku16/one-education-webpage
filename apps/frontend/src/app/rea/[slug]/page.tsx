@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { BlocksContent } from "@strapi/blocks-react-renderer";
 import {
   ChevronLeft,
   BookOpen,
@@ -13,6 +14,8 @@ import {
 
 import { getResourceBySlug, getResources } from "@/src/services/resources";
 import { BlocksContentRenderer } from "@/src/components/resources/BlocksContent";
+import { MediaBlockContent } from "@/src/components/resources/MediaBlockContent";
+import { DocumentBlock } from "@/src/components/resources/DocumentBlock";
 
 interface ReaSlugPageProps {
   params: Promise<{
@@ -79,15 +82,18 @@ function MiniCard({
   );
 }
 
-function hasBlocks(value: unknown) {
+function hasBlocks(value: unknown): value is BlocksContent {
   return Array.isArray(value) && value.length > 0;
 }
 
-function renderRichTextOrParagraph(value: any, className = "") {
+function renderRichTextOrParagraph(
+  value: BlocksContent | string | null | undefined,
+  className = ""
+) {
   if (!value) return null;
 
   if (Array.isArray(value)) {
-    return <BlocksContentRenderer content={value} />;
+    return <BlocksContentRenderer content={value ?? []} />;
   }
 
   if (typeof value === "string") {
@@ -121,7 +127,7 @@ function renderSection(section: any, index: number) {
         </div>
 
         <div className="child-content">
-          <BlocksContentRenderer content={section.content} />
+          <BlocksContentRenderer content={section.content ?? []} />
         </div>
       </section>
     );
@@ -170,19 +176,24 @@ function renderSection(section: any, index: number) {
         )}
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {(section.items ?? []).map((item: any, itemIndex: number) => (
-            <div
-              key={itemIndex}
-              className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/60"
-            >
-              <p className="font-bold text-slate-900">{item.title}</p>
-              {item.description && (
-                <p className="mt-1 text-sm leading-6 text-slate-600">
-                  {item.description}
-                </p>
-              )}
-            </div>
-          ))}
+          {(section.items ?? []).map(
+            (
+              item: { id?: number; title?: string | null; description?: string | null },
+              itemIndex: number
+            ) => (
+              <div
+                key={item.id ?? itemIndex}
+                className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/60"
+              >
+                <p className="font-bold text-slate-900">{item.title}</p>
+                {item.description && (
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    {item.description}
+                  </p>
+                )}
+              </div>
+            )
+          )}
         </div>
       </section>
     );
@@ -249,62 +260,75 @@ function renderSection(section: any, index: number) {
         )}
 
         <div className="space-y-4">
-          {(section.phases ?? []).map((phase: any, phaseIndex: number) => (
-            <article
-              key={phaseIndex}
-              className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/60"
-            >
-              <p className="text-sm font-bold text-teal-700">
-                Fase {phase.phase_number ?? phaseIndex + 1}
-              </p>
-
-              <h3 className="mt-1 text-base font-black text-slate-900 sm:text-lg">
-                {phase.title}
-              </h3>
-
-              {phase.main_resource && (
-                <p className="mt-2 text-sm font-semibold text-slate-500">
-                  Recurso principal: {phase.main_resource}
+          {(section.phases ?? []).map(
+            (
+              phase: {
+                id?: number;
+                phase_number?: number | null;
+                title?: string | null;
+                main_resource?: string | null;
+                objective?: BlocksContent | null;
+                development?: BlocksContent | null;
+                expected_results?: BlocksContent | null;
+              },
+              phaseIndex: number
+            ) => (
+              <article
+                key={phase.id ?? phaseIndex}
+                className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/60"
+              >
+                <p className="text-sm font-bold text-teal-700">
+                  Fase {phase.phase_number ?? phaseIndex + 1}
                 </p>
-              )}
 
-              {phase.objective && (
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
-                    Objetivo
-                  </p>
-                  {renderRichTextOrParagraph(
-                    phase.objective,
-                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
-                  )}
-                </div>
-              )}
+                <h3 className="mt-1 text-base font-black text-slate-900 sm:text-lg">
+                  {phase.title}
+                </h3>
 
-              {phase.development && (
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
-                    Desarrollo
+                {phase.main_resource && (
+                  <p className="mt-2 text-sm font-semibold text-slate-500">
+                    Recurso principal: {phase.main_resource}
                   </p>
-                  {renderRichTextOrParagraph(
-                    phase.development,
-                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
-                  )}
-                </div>
-              )}
+                )}
 
-              {phase.expected_results && (
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
-                    Resultados esperados
-                  </p>
-                  {renderRichTextOrParagraph(
-                    phase.expected_results,
-                    "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
-                  )}
-                </div>
-              )}
-            </article>
-          ))}
+                {phase.objective && (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                      Objetivo
+                    </p>
+                    {renderRichTextOrParagraph(
+                      phase.objective,
+                      "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                    )}
+                  </div>
+                )}
+
+                {phase.development && (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                      Desarrollo
+                    </p>
+                    {renderRichTextOrParagraph(
+                      phase.development,
+                      "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                    )}
+                  </div>
+                )}
+
+                {phase.expected_results && (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">
+                      Resultados esperados
+                    </p>
+                    {renderRichTextOrParagraph(
+                      phase.expected_results,
+                      "text-sm leading-7 text-slate-700 sm:text-base whitespace-pre-line"
+                    )}
+                  </div>
+                )}
+              </article>
+            )
+          )}
         </div>
       </section>
     );
@@ -323,22 +347,51 @@ function renderSection(section: any, index: number) {
         )}
 
         <div className="space-y-3">
-          {(section.items ?? []).map((item: any, linkIndex: number) => (
-            <a
-              key={linkIndex}
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-800 transition hover:bg-slate-100"
-            >
-              <div className="font-bold">{item.label}</div>
-              {item.type && (
-                <div className="text-sm text-slate-500">{item.type}</div>
-              )}
-            </a>
-          ))}
+          {(section.items ?? []).map(
+            (
+              item: { id?: number; label?: string | null; url?: string | null; type?: string | null },
+              linkIndex: number
+            ) => (
+              <a
+                key={item.id ?? linkIndex}
+                href={item.url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-800 transition hover:bg-slate-100"
+              >
+                <div className="font-bold">{item.label}</div>
+                {item.type && (
+                  <div className="text-sm text-slate-500">{item.type}</div>
+                )}
+              </a>
+            )
+          )}
         </div>
       </section>
+    );
+  }
+
+  if (type === "resource.media-block") {
+    return (
+      <MediaBlockContent
+        key={index}
+        title={section.title}
+        description={section.description}
+        media={section.media}
+        caption={section.caption}
+      />
+    );
+  }
+
+  if (type === "resource.document-block") {
+    return (
+      <DocumentBlock
+        key={index}
+        title={section.title}
+        description={section.description}
+        file={section.file}
+        caption={section.caption}
+      />
     );
   }
 
@@ -347,7 +400,9 @@ function renderSection(section: any, index: number) {
       key={index}
       className="mt-6 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px]"
     >
-      <p className="text-sm font-semibold text-slate-500">Bloque no reconocido</p>
+      <p className="text-sm font-semibold text-slate-500">
+        Bloque no reconocido: {String(type)}
+      </p>
       <pre className="mt-3 overflow-auto rounded-2xl bg-slate-950 p-4 text-xs text-white">
         {JSON.stringify(section, null, 2)}
       </pre>
@@ -361,9 +416,7 @@ export default async function ReaSlugPage({ params }: ReaSlugPageProps) {
 
   if (!resource) notFound();
 
-  const sections = Array.isArray((resource as any).sections)
-    ? (resource as any).sections
-    : [];
+  const sections = Array.isArray(resource.sections) ? resource.sections : [];
   const hasContent = hasBlocks(resource.content);
   const hasSections = sections.length > 0;
 
@@ -512,7 +565,7 @@ export default async function ReaSlugPage({ params }: ReaSlugPageProps) {
 
             {hasSections ? (
               <div className="mt-6 space-y-6 sm:mt-8 sm:space-y-8">
-                {sections.map(renderSection)}
+                {sections.map((section, index) => renderSection(section, index))}
               </div>
             ) : hasContent ? (
               <section className="mt-6 rounded-[22px] bg-[#fffefb] p-4 shadow-sm ring-1 ring-slate-200/70 sm:mt-8 sm:rounded-[26px] sm:p-6 lg:rounded-[30px] lg:p-8">
@@ -531,7 +584,7 @@ export default async function ReaSlugPage({ params }: ReaSlugPageProps) {
                 </div>
 
                 <div className="child-content">
-                  <BlocksContentRenderer content={resource.content as any} />
+                  <BlocksContentRenderer content={resource.content ?? []} />
                 </div>
               </section>
             ) : (

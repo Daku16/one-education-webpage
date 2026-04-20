@@ -32,6 +32,19 @@ export interface ResourceCallout extends Struct.ComponentSchema {
   };
 }
 
+export interface ResourceDocumentBlock extends Struct.ComponentSchema {
+  collectionName: 'components_resource_document_blocks';
+  info: {
+    displayName: 'document-block';
+  };
+  attributes: {
+    caption: Schema.Attribute.String;
+    description: Schema.Attribute.Blocks;
+    file: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface ResourceKeyPoints extends Struct.ComponentSchema {
   collectionName: 'components_resource_key_points';
   info: {
@@ -173,6 +186,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'resource.activity': ResourceActivity;
       'resource.callout': ResourceCallout;
+      'resource.document-block': ResourceDocumentBlock;
       'resource.key-points': ResourceKeyPoints;
       'resource.links': ResourceLinks;
       'resource.material-item': ResourceMaterialItem;

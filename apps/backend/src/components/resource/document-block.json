@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_resource_document_blocks",
+  "info": {
+    "displayName": "document-block"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "caption": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

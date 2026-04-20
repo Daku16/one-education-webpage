@@ -1,17 +1,25 @@
-import type { Core } from '@strapi/strapi';
-
-export default ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
+export default ({ env }) => ({
   upload: {
     config: {
-      provider: 'cloudinary',
+      provider: "@strapi/provider-upload-cloudinary",
       providerOptions: {
-        cloud_name: env('CLOUDINARY_NAME'),
-        api_key: env('CLOUDINARY_KEY'),
-        api_secret: env('CLOUDINARY_SECRET'),
+        cloud_name: env("CLOUDINARY_NAME"),
+        api_key: env("CLOUDINARY_KEY"),
+        api_secret: env("CLOUDINARY_SECRET"),
       },
       actionOptions: {
-        upload: {},
-        uploadStream: {},
+        upload: {
+          resource_type: "auto",
+          folder: "one-education-platform",
+          use_filename: true,
+          unique_filename: true,
+        },
+        uploadStream: {
+          resource_type: "auto",
+          folder: "one-education-platform",
+          use_filename: true,
+          unique_filename: true,
+        },
         delete: {},
       },
     },

@@ -543,13 +543,15 @@ export interface ApiNewsletterNewsletter extends Struct.CollectionTypeSchema {
     singularName: 'newsletter';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    email: Schema.Attribute.Email;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -689,6 +691,7 @@ export interface ApiResourceResource extends Struct.CollectionTypeSchema {
         'resource.activity',
         'resource.links',
         'resource.media-block',
+        'resource.document-block',
       ]
     >;
     slug: Schema.Attribute.UID<'title'>;

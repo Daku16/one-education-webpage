@@ -88,7 +88,8 @@
         "resource.phase-item",
         "resource.activity",
         "resource.links",
-        "resource.media-block"
+        "resource.media-block",
+        "resource.document-block"
       ]
     }
   }

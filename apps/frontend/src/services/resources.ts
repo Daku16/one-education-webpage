@@ -1,9 +1,9 @@
 import { apiGet } from "@/src/lib/api";
+import type { BlocksContent } from "@strapi/blocks-react-renderer";
 import type {
   Resource,
   ResourceRelation,
   StrapiImage,
-  ResourceContentBlock,
   ResourceSection,
   ResourceRichTextSection,
   ResourceCalloutSection,
@@ -11,6 +11,10 @@ import type {
   ResourceActivitySection,
   ResourcePhaseListSection,
   ResourceLinksSection,
+  ResourceMediaBlockSection,
+  ResourceDocumentBlockSection,
+  ResourceMediaItem,
+  ResourceFile,
 } from "@/src/types/resource";
 
 interface StrapiKeyPointItem {
@@ -24,9 +28,9 @@ interface StrapiPhaseItem {
   phase_number?: number | null;
   title?: string | null;
   main_resource?: string | null;
-  objective?: ResourceContentBlock[] | null;
-  development?: ResourceContentBlock[] | null;
-  expected_results?: ResourceContentBlock[] | null;
+  objective?: BlocksContent | null;
+  development?: BlocksContent | null;
+  expected_results?: BlocksContent | null;
 }
 
 interface StrapiLinkItem {
@@ -44,13 +48,13 @@ interface StrapiSectionBase {
 interface StrapiRichTextSection extends StrapiSectionBase {
   __component: "shared.rich-text";
   title?: string | null;
-  content?: ResourceContentBlock[] | null;
+  content?: BlocksContent | null;
 }
 
 interface StrapiCalloutSection extends StrapiSectionBase {
   __component: "resource.callout";
   title?: string | null;
-  text?: ResourceContentBlock[] | null;
+  text?: BlocksContent | null;
   variant?: string | null;
 }
 
@@ -65,9 +69,9 @@ interface StrapiActivitySection extends StrapiSectionBase {
   __component: "resource.activity";
   title?: string | null;
   activity_type?: string | null;
-  objective?: ResourceContentBlock[] | null;
-  instructions?: ResourceContentBlock[] | null;
-  expected_outcome?: ResourceContentBlock[] | null;
+  objective?: BlocksContent | null;
+  instructions?: BlocksContent | null;
+  expected_outcome?: BlocksContent | null;
 }
 
 interface StrapiPhaseListSection extends StrapiSectionBase {
@@ -84,6 +88,43 @@ interface StrapiLinksSection extends StrapiSectionBase {
   items?: StrapiLinkItem[] | null;
 }
 
+interface StrapiMediaItem {
+  id?: number;
+  url: string;
+  alternativeText?: string | null;
+  width?: number;
+  height?: number;
+  mime?: string | null;
+  ext?: string | null;
+  name?: string | null;
+}
+
+interface StrapiMediaBlockSection extends StrapiSectionBase {
+  __component: "resource.media-block";
+  title?: string | null;
+  description?: BlocksContent | null;
+  media?: StrapiMediaItem[] | null;
+  caption?: string | null;
+}
+
+interface StrapiFile {
+  id?: number;
+  url: string;
+  alternativeText?: string | null;
+  mime?: string | null;
+  ext?: string | null;
+  name?: string | null;
+  size?: number | null;
+}
+
+interface StrapiDocumentBlockSection extends StrapiSectionBase {
+  __component: "resource.document-block";
+  title?: string | null;
+  description?: BlocksContent | null;
+  file?: StrapiFile | null;
+  caption?: string | null;
+}
+
 type StrapiSection =
   | StrapiRichTextSection
   | StrapiCalloutSection
@@ -91,6 +132,8 @@ type StrapiSection =
   | StrapiActivitySection
   | StrapiPhaseListSection
   | StrapiLinksSection
+  | StrapiMediaBlockSection
+  | StrapiDocumentBlockSection
   | StrapiSectionBase;
 
 interface StrapiResourceItem {
@@ -99,18 +142,12 @@ interface StrapiResourceItem {
   title: string;
   slug: string;
   description: string;
-  content?: ResourceContentBlock[] | null;
+  content?: BlocksContent | null;
   sections?: StrapiSection[] | null;
   audience?: string | null;
   resource_type?: string | null;
   difficulty?: string | null;
-  cover?: {
-    id?: number;
-    url: string;
-    alternativeText?: string | null;
-    width?: number;
-    height?: number;
-  } | null;
+  cover?: StrapiImage | null;
   categories?: ResourceRelation[];
   tags?: ResourceRelation[];
   age_groups?: ResourceRelation[];
@@ -142,6 +179,35 @@ function normalizeRelationArray(items: ResourceRelation[] = []): ResourceRelatio
   }));
 }
 
+function normalizeMediaItem(media?: StrapiImage | StrapiMediaItem | null): ResourceMediaItem | null {
+  if (!media?.url) return null;
+
+  return {
+    id: media.id,
+    url: getMediaUrl(media.url),
+    alternativeText: media.alternativeText ?? null,
+    width: media.width,
+    height: media.height,
+    mime: media.mime ?? null,
+    ext: media.ext ?? null,
+    name: media.name ?? null,
+  };
+}
+
+function normalizeFile(file?: StrapiFile | null): ResourceFile | null {
+  if (!file?.url) return null;
+
+  return {
+    id: file.id,
+    url: getMediaUrl(file.url),
+    alternativeText: file.alternativeText ?? null,
+    mime: file.mime ?? null,
+    ext: file.ext ?? null,
+    name: file.name ?? null,
+    size: file.size ?? null,
+  };
+}
+
 function normalizeCover(cover?: StrapiImage | null): StrapiImage | null {
   if (!cover?.url) return null;
 
@@ -151,6 +217,9 @@ function normalizeCover(cover?: StrapiImage | null): StrapiImage | null {
     alternativeText: cover.alternativeText ?? null,
     width: cover.width,
     height: cover.height,
+    mime: cover.mime ?? null,
+    ext: cover.ext ?? null,
+    name: cover.name ?? null,
   };
 }
 
@@ -176,6 +245,14 @@ function isPhaseListSection(section: StrapiSection): section is StrapiPhaseListS
 
 function isLinksSection(section: StrapiSection): section is StrapiLinksSection {
   return section.__component === "resource.links";
+}
+
+function isMediaBlockSection(section: StrapiSection): section is StrapiMediaBlockSection {
+  return section.__component === "resource.media-block";
+}
+
+function isDocumentBlockSection(section: StrapiSection): section is StrapiDocumentBlockSection {
+  return section.__component === "resource.document-block";
 }
 
 function normalizeSections(sections?: StrapiSection[] | null): ResourceSection[] {
@@ -262,6 +339,34 @@ function normalizeSections(sections?: StrapiSection[] | null): ResourceSection[]
           url: item.url ?? null,
           type: item.type ?? null,
         })),
+      };
+      return normalized;
+    }
+
+    if (isMediaBlockSection(section)) {
+      const normalized: ResourceMediaBlockSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        description: section.description ?? [],
+        media: Array.isArray(section.media)
+          ? (section.media
+              .map((item) => normalizeMediaItem(item))
+              .filter(Boolean) as ResourceMediaItem[])
+          : [],
+        caption: section.caption ?? null,
+      };
+      return normalized;
+    }
+
+    if (isDocumentBlockSection(section)) {
+      const normalized: ResourceDocumentBlockSection = {
+        __component: section.__component,
+        id: section.id,
+        title: section.title ?? null,
+        description: section.description ?? [],
+        file: normalizeFile(section.file),
+        caption: section.caption ?? null,
       };
       return normalized;
     }
@@ -358,6 +463,16 @@ export async function getResourceBySlug(slug: string): Promise<Resource | null> 
             },
             "resource.links": {
               populate: "*",
+            },
+            "resource.media-block": {
+              populate: {
+                media: true,
+              },
+            },
+            "resource.document-block": {
+              populate: {
+                file: true,
+              },
             },
           },
         },
