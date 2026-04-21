@@ -9,9 +9,15 @@ const config: Core.Config.Middlewares = [
     config: {
       origin: [
         'http://localhost:3000',
+
+        // ✅ producción real
+        'https://one-edu.co',
+        'https://www.one-edu.co',
+
+        // ✅ vercel (SIN slash final)
         'https://one-education-webpage.vercel.app',
-        'https://one-education-webpage-git-main-daku16s-projects.vercel.app/',
-        'https://one-education-webpage-mjq82aijw-daku16s-projects.vercel.app/'
+        'https://one-education-webpage-git-main-daku16s-projects.vercel.app',
+        'https://one-education-webpage-mjq82aijw-daku16s-projects.vercel.app'
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
